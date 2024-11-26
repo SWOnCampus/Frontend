@@ -2,15 +2,39 @@ import styled from "styled-components";
 import logo from "../../assets/register/logo.svg";
 import profile from "../../assets/mypage/profile.svg";
 import InfoContainer from "./InfoContainer";
+import { getMyProfile } from "../../api/myPageApi";
+import { useEffect, useState } from "react";
 
 export default function MyPageComponent() {
+  const [profileData, setProfileData] = useState({
+    email: "",
+    name: "",
+    phone: "",
+    corporationNum: "",
+    reports: [],
+  });
+
+  useEffect(() => {
+    // 프로필 데이터 가져오기
+    const fetchProfile = async () => {
+      try {
+        const data = await getMyProfile();
+        setProfileData(data); // 가져온 데이터를 상태에 저장
+      } catch (err) {
+        console.error("프로필 데이터를 가져오는 중 오류가 발생했습니다.", err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <Wrapper>
       <Logo src={logo} />
       <Title>내 프로필</Title>
       <img src={profile} style={{ width: "61px", height: "61px" }} />
       <Label>기업회원</Label>
-      <InfoContainer />
+      <InfoContainer profileData={profileData} />
     </Wrapper>
   );
 }

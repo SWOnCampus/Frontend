@@ -1,15 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-export default function InfoContainer() {
-  const [email, setEmail] = useState("test@naver.com");
-  const [name, setName] = useState("이세은");
-  const [phone, setPhone] = useState("010-1234-5678");
-  const [businessNumber, setBusinessNumger] = useState("123-12-121212");
-  const [report, setReport] = useState([
-    { date: "2024-10-26", title: "리포트 제목1" },
-    { date: "2024-10-26", title: "리포트 제목2" },
-  ]);
+export default function InfoContainer({ profileData }) {
+  const { email, name, phone, corporationNum, reports } = profileData;
 
   return (
     <Wrapper>
@@ -30,15 +23,15 @@ export default function InfoContainer() {
 
       <InputContainer>
         <InputTitle>사업자 등록번호</InputTitle>
-        <Input>{businessNumber}</Input>
+        <Input>{corporationNum}</Input>
       </InputContainer>
 
       <InputContainer>
         <InputTitle>지난 리포트</InputTitle>
-        {report.length === 0 ? (
+        {reports.length === 0 ? (
           <ReportContainer>아직 리포트가 없어요!</ReportContainer>
         ) : (
-          report.map((item, index) => (
+          reports.map((item, index) => (
             <PrevReport key={index}>
               <div>{item.date}</div>
               <div>{item.title}</div>
