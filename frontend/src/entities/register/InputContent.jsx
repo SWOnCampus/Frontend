@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { emailCheck, businessNumberCheck, signup } from "../../api/registerApi";
+import { useNavigate } from "react-router-dom";
 
 export default function InputContent() {
+  const navigate = useNavigate();
   // 상태관리
   const [email, setEmail] = useState("");
   const [emailChecked, setEmailChecked] = useState(false);
@@ -141,6 +143,7 @@ export default function InputContent() {
       const result = await signup(data);
       alert("회원가입에 성공했습니다!");
       console.log("Signup success:", result);
+      navigate("/login");
     } catch (error) {
       alert(
         error.message || "회원가입 중 오류가 발생했습니다. 다시 시도해주세요."

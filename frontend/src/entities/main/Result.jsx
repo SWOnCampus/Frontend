@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { hoverGrow } from "../../shared/animation/hoverGrow";
 import { getPdf, getAllPdf } from "../../api/consultApi";
+
 export default function Result({ selectedButton, reportData }) {
   const title = ["요약", "상세"];
   const [name, setName] = useState("기업명");
@@ -25,8 +26,7 @@ export default function Result({ selectedButton, reportData }) {
       const base64Pdf =
         selectedButton === 0 ? await getPdf() : await getAllPdf();
 
-      // Base64 디코딩 및 Blob 생성
-      const binary = atob(base64Pdf);
+      const binary = atob(base64Pdf.data.pdf);
       const arrayBuffer = new Uint8Array(binary.length);
 
       for (let i = 0; i < binary.length; i++) {
@@ -34,16 +34,11 @@ export default function Result({ selectedButton, reportData }) {
       }
 
       const blob = new Blob([arrayBuffer], { type: "application/pdf" });
-      console.log("Blob 생성 완료:", blob);
-
-      // Blob URL 생성
       const downloadUrl = window.URL.createObjectURL(blob);
-      console.log("Blob URL 생성 성공:", downloadUrl);
 
-      // PDF 다운로드 링크 생성 및 클릭
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.setAttribute("download", "리포트.pdf");
+      link.setAttribute("download", `${title[selectedButton]}_리포트.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();

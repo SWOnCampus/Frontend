@@ -44,8 +44,6 @@ export default function LoginComponent() {
       try {
         const response = await login(values.email, values.password);
         if (response.status === 200) {
-          const token = response.data.token;
-          localStorage.setItem("authToken", token);
           alert("로그인 성공");
           navigate("/");
         }

@@ -1,15 +1,34 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function InfoContainer() {
-  const [email, setEmail] = useState("test@naver.com");
-  const [name, setName] = useState("이세은");
-  const [phone, setPhone] = useState("010-1234-5678");
-  const [businessNumber, setBusinessNumger] = useState("123-12-121212");
-  const [report, setReport] = useState([
-    { date: "2024-10-26", title: "리포트 제목1" },
-    { date: "2024-10-26", title: "리포트 제목2" },
-  ]);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [businessNumber, setBusinessNumber] = useState("");
+  const [report, setReport] = useState([]);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 현재 사용자 정보 가져오기
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const authToken = localStorage.getItem("authToken");
+
+    // 현재 로그인한 사용자 확인
+    if (authToken) {
+      const decodedEmail = atob(authToken);
+      const currentUser = users.find((user) => user.email === decodedEmail);
+
+      if (currentUser) {
+        setEmail(currentUser.email);
+        setName(currentUser.name);
+        setPhone(currentUser.phone);
+        setBusinessNumber(currentUser.businessNumger || "정보 없음");
+        setReport(currentUser.reports || []); // 사용자 리포트 추가 (옵션)
+      }
+    }
+  }, []);
 
   return (
     <Wrapper>
@@ -48,7 +67,9 @@ export default function InfoContainer() {
         )}
       </InputContainer>
 
-      <RegisterButton>수정하기</RegisterButton>
+      <RegisterButton onClick={() => navigate("/info-edit")}>
+        수정하기
+      </RegisterButton>
     </Wrapper>
   );
 }

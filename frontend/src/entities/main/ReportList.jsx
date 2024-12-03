@@ -3,9 +3,11 @@ import logo from "../../assets/register/logo.svg";
 import profile from "../../assets/mypage/profile.svg";
 import logout from "../../assets/main/out.svg";
 import msg from "../../assets/main/msg.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ReportList() {
+  const navigate = useNavigate();
   const [name, setName] = useState("마음ai");
   const [report, setReport] = useState([
     "리포트1",
@@ -30,6 +32,21 @@ export default function ReportList() {
   ]);
   //const [report, setReport] = useState([]);
 
+  useEffect(() => {
+    // 로컬 스토리지에서 현재 사용자 정보 가져오기
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const authToken = localStorage.getItem("authToken");
+
+    // 현재 로그인한 사용자 확인
+    if (authToken) {
+      const decodedEmail = atob(authToken); // 토큰에서 이메일 복호화
+      const currentUser = users.find((user) => user.email === decodedEmail);
+
+      if (currentUser) {
+        setName(currentUser.name || "사용자"); // 이름 설정
+      }
+    }
+  }, []);
 
   return (
     <Wrapper>
@@ -50,13 +67,16 @@ export default function ReportList() {
       </ListWrapper>
 
       <ProfileWrapper>
-        <img 
-            src={profile} 
-            style={{ 
-                width: "2rem", 
-                height: "2rem", 
-                cursor:"pointer" }} />
-        <Name>{name}</Name>
+        <img
+          src={profile}
+          style={{
+            width: "2rem",
+            height: "2rem",
+            cursor: "pointer",
+          }}
+          onClick={() => navigate("/login")}
+        />
+        <Name onClick={() => navigate("/mypage")}>{name}</Name>
         <img
           src={logout}
           style={{
@@ -64,7 +84,7 @@ export default function ReportList() {
             height: "1.2rem",
             position: "absolute",
             right: "0",
-            cursor:"pointer"
+            cursor: "pointer",
           }}
         />
       </ProfileWrapper>
@@ -122,6 +142,7 @@ const Name = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  cursor: "pointer";
 `;
 
 const None = styled.div`
